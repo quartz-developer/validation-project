@@ -1,9 +1,9 @@
 import React , {useEffect , useState} from 'react';
-import { ToastContainer} from 'react-toastify';
+import { toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from "react-router-dom";
 
-
+import { singUpApi } from './api/authApi';
 import {validate} from "./validate";
 import {notify} from "./toast";
 import style from "./SignUp.module.css";
@@ -45,27 +45,42 @@ const SignUp = () => {
     const SubmitHandler = event => {
         event.preventDefault();
 
-        const getEmailFromLS = localStorage.key(`${data.email}`);
-
-        if(data.email === getEmailFromLS) {
-            notify('Email Is Already Used. Please Create New Acount Or Login' , 'error');
-            
-        } else {
-            if(!Object.keys(errors).length) {
-            notify('You Signde Up Successfully' , 'success');
-            addToLocalStorage();
-    
-            } else {
-            notify('Invalid Data!!' , 'error');
-                setTouched ({
-                    name:true,
-                    email:true,
-                    password:true,
-                    confrimPassword:true,
-                    isAccepted:true
-                })
-            }
+        const userData = {
+            name:data.name,
+            email:data.email,
+            password:data.password
         }
+      
+        singUpApi(userData , (istrue , data) => {
+            if(istrue){
+                toast.success(data.message)
+            }
+            else(
+                toast.error(data)
+            )
+        })
+
+        // const getEmailFromLS = localStorage.key(`${data.email}`);
+
+        // if(data.email === getEmailFromLS) {
+        //     notify('Email Is Already Used. Please Create New Acount Or Login' , 'error');
+            
+        // } else {
+        //     if(!Object.keys(errors).length) {
+        //     notify('You Signde Up Successfully' , 'success');
+        //     addToLocalStorage();
+    
+        //     } else {
+        //     notify('Invalid Data!!' , 'error');
+        //         setTouched ({
+        //             name:true,
+        //             email:true,
+        //             password:true,
+        //             confrimPassword:true,
+        //             isAccepted:true
+        //         })
+        //     }
+        // }
 
     }
 

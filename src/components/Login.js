@@ -1,9 +1,9 @@
 import React , {useEffect , useState} from 'react';
-import { ToastContainer} from 'react-toastify';
+import { toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 
-
+import { singInApi } from './api/authApi';
 import {validate} from "./validate";
 import {notify} from "./toast";
 import style from "./SignUp.module.css";
@@ -13,7 +13,7 @@ const Login = () => {
 
     const [data , setData] = useState ({
         password: "",
-        confrimPassword: "",
+        email: "",
     });
 
     const [errors , setErrors] = useState({});
@@ -34,21 +34,35 @@ const Login = () => {
     const SubmitHandler = event => {
         event.preventDefault();
 
-        let datas = JSON.parse(localStorage.getItem(`${data.email}`));
-        let dataEmail = localStorage.key(`${data.email}`)
-
-        if(!Object.keys(errors).length) {
-
-            if(data.email === dataEmail && data.password === datas.password) {
-                notify(`Welcome Dear ${datas.name} 💖` , 'success');
-            } else {
-                notify('Please Checked Your Email Or Password 🙏' , 'error');
-                setTouched ({
-                    email:true,
-                    password:true,
-                })
-            }
+        const userData = {
+            
+            email:data.email,
+            password:data.password
         }
+
+        singInApi(userData, (istrue , data) => {
+            if(istrue){
+                toast.success(data.message)
+            }else{
+                toast.error(data)
+            }
+        })
+
+        // let datas = JSON.parse(localStorage.getItem(`${data.email}`));
+        // let dataEmail = localStorage.key(`${data.email}`)
+
+        // if(!Object.keys(errors).length) {
+
+        //     if(data.email === dataEmail && data.password === datas.password) {
+        //         notify(`Welcome Dear ${datas.name} 💖` , 'success');
+        //     } else {
+        //         notify('Please Checked Your Email Or Password 🙏' , 'error');
+        //         setTouched ({
+        //             email:true,
+        //             password:true,
+        //         })
+        //     }
+        // }
     }
 
 
